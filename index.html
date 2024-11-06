@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device Motion Image Change</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            transition: background-color 0.5s; /* Smooth transition */
+            background:linear-gradient(rgba(0, 0, 0, 0.528), rgba(0, 0, 0, 0.591)), url('./images/bg.avif');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .shake-info {
+            font-size: 24px;
+            color: rgb(8, 5, 5);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #shakeImage {
+            max-width: 80%; /* Responsive image */
+            height: auto;
+            border-radius: 10px; /* Optional: rounded corners */
+            /* filter:blur(1px) */
+        }
+
+span {
+  /* background: #48abe0; */
+  /* color: white; */
+ 
+  display: inline-block;
+  /* border: 2px solid; */
+
+}
+span > img{
+    width: 80px;
+    transition: filter 0.5s; /* Smooth transition for the filter */
+}
+
+span.skew-shake-y {
+  animation: skew-y-shake 1.3s infinite;
+}
+
+span.strong-hover-shake:hover {
+  animation: tilt-shaking 0.15s infinite;
+}
+
+span.constant-tilt-shake {
+  animation: tilt-shaking 0.3s infinite;
+}
+@keyframes tilt-shaking {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(5deg); }
+  50% { transform: rotate(0eg); }
+  75% { transform: rotate(-5deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.hints{
+    text-align: center;
+    position: absolute;
+    color: white;
+}
+
+
+/* zoom in effect */
+
+
+    </style>
+</head>
+<body>
+
+    <div class="shake-info"></div>
+    <img id="shakeImage" src="images/1.webp" alt="Shake Image">
+
+    <div class="hints">
+        <p> Shake your device to change the image!</p>
+        <span class="constant-tilt-shake"><img src="images/shake.png" alt="" id="shakeHint"></span>
+      </div>
+
+    <script>
+
+        let shakeHint =  document.getElementById("shakeHint");
+        // Threshold for shake detection
+        const shakeThreshold = 15;
+
+        // List of images to change to
+        const images = [
+            'images/2.webp', // Replace with your image URLs
+            'images/3.webp',
+            'images/4.webp',
+            'images/5.webp',
+            'images/6.webp'
+        ];
+ 
+        // Device motion event listener
+        window.addEventListener("devicemotion", (event) => {
+            const acceleration = event.acceleration;
+            if (acceleration) {
+                const { x, y, z } = acceleration;
+
+                // Check if the shake exceeds the threshold
+                if (Math.abs(x) > shakeThreshold || Math.abs(y) > shakeThreshold || Math.abs(z) > shakeThreshold) {
+                    changeImage();
+                    
+                }
+            }
+        });
+
+        // Function to change the image
+        function changeImage() {
+            const randomImage = images[Math.floor(Math.random() * images.length)];
+            const imgElement = document.getElementById('shakeImage');
+            gsap.to(imgElement, { opacity: 0, duration: 0.5, onComplete: () => {
+                imgElement.src = randomImage; // Change the image source
+                gsap.to(imgElement, { opacity: 1, duration: 0.5 }); // Fade in the new image
+            }});
+        }
+
+        // zoom in effects
+
+        //effect1
+        gsap.to('#shakeImage', {
+                scale: 0, // Scale to 120%
+                duration: 0.5, // Duration of the zoom effect
+                ease: "power2.out", // Easing function for a smooth effect
+                onComplete: () => {
+                    // Optional: Zoom out effect after zooming in
+                    gsap.to('#shakeImage', {
+                        scale: 1, // Scale back to original size
+                        duration: 0.5, // Duration of the zoom out effect
+                        ease: "power2.in" // Easing function for a smooth effect
+                    });
+                }
+            });
+
+        
+    </script>
+
+</body>
+</html>
